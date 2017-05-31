@@ -49,6 +49,9 @@ set(LIBRARIES ${OPENDAVINCI_LIBRARIES})
 # Add subfolders with sources.
 add_subdirectory(perception)
 add_subdirectory(control)
+add_subdirectory(lanefollower)
+add_subdirectory(boxparker)
+add_subdirectory(sidewaysparker)
 
 ###########################################################################
 # Enable CPack to create .deb and .rpm.
