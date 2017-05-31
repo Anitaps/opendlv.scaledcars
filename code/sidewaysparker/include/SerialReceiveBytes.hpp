@@ -5,6 +5,6 @@ class SerialReceiveBytes : public odcore::io::StringListener {
 public:
     // Your class needs to implement the method void nextString(const std::string &s).
     virtual void nextString(const std::string &s);
-void receiveSerial();
+//private:
+//	string abc;
 };
-

@@ -28,7 +28,7 @@
 
 #include "SidewaysParker.h"
 
-//#include "SerialReceiveBytes.cpp"
+#include "SerialReceiveBytes.hpp"
 #include <math.h>
 #include <stdint.h>                                                         //Serial
 #include <iostream>                                                         //Serial
@@ -107,13 +107,18 @@ namespace automotive {
         // This method will do the main data processing job.
          odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SidewaysParker::body() {
 
+
+             SerialReceiveBytes input;
+             serial ->setStringListener(&input);
+             serial ->start();
+
                 const double INFRARED_FRONT_RIGHT = 0;
                 const double INFRARED_REAR = 1;
                 const double INFRARED_REAR_RIGHT = 2;
                 const double ULTRASONIC_FRONT = 3;
 
             double size = 0;
-            double irFRValue = 0
+            double irFRValue = 0;
             double start = 0;
             double end = 0;
             double a = 0;
@@ -385,6 +390,8 @@ namespace automotive {
                 // Send container.
                 getConference().send(c);
             }
+             serial ->stop();
+            serial ->setStringListener(NULL);
             //vaghti ctl c mizanim toye supercomponent oka print mishe ke baste shod barname
             return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
         }
