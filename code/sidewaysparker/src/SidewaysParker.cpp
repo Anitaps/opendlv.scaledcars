@@ -405,7 +405,7 @@ namespace automotive {
             }
             serial ->stop();
             serial ->setStringListener(NULL);
-            //vaghti ctl c mizanim toye supercomponent oka print mishe ke baste shod barname
+
             return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
         }
     }
