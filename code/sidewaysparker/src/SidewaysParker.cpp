@@ -38,6 +38,9 @@
 #include <opendavinci/odcore/wrapper/SerialPortFactory.h>                   //Serial
 #include <opendavinci/odcore/base/Thread.h>                                 //Serial
 
+#define SERIAL_PORT "/dev/ttyACM0"
+#define BAUD_RATE 9600
+
 namespace automotive {
      namespace miniature {
         //refering to inside libraries probably
@@ -69,8 +72,8 @@ namespace automotive {
        
 //here we start the method for sending serial 
         void SidewaysParker::openSerialPort(){
-               const string SERIAL_PORT = "/dev/ttyACM0";        
-            const uint32_t BAUD_RATE = 9600;                    
+            //const string SERIAL_PORT = "/dev/pts/19";        
+            //const uint32_t BAUD_RATE = 9600;                    
 
         // We are using OpenDaVINCI's std::shared_ptr to automatically
         // release any acquired resources.
@@ -108,9 +111,9 @@ namespace automotive {
          odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SidewaysParker::body() {
 
 
-             SerialReceiveBytes input;
-             serial ->setStringListener(&input);
-             serial ->start();
+            SerialReceiveBytes input;
+            serial->setStringListener(&input);
+            serial->start();
 
                 const double INFRARED_FRONT_RIGHT = 0;
                 const double INFRARED_REAR = 1;
@@ -143,15 +146,22 @@ namespace automotive {
                 VehicleData vd = containerVehicleData.getData<VehicleData>();
 
   
-                Container containerSensorBoardData = getKeyValueDataStore().get(
-                        automotive::miniature::SensorBoardData::ID());
+                Container containerSensorBoardData = getKeyValueDataStore().get(automotive::miniature::SensorBoardData::ID());
                 SensorBoardData sbd = containerSensorBoardData.getData<SensorBoardData>();
 
+                cout << "Please" << endl;
+                cout << "Infrared" << input.getir1() << endl;
+                cout << "INFRARED_REAR_RIGHT" << input.getir2() << endl;
+                cout << "INFRARED_REAR" << input.getir3() << endl;
+                cout << "ULTRASONIC_FRONT" << input.getuls() << endl;
+                cout << "Odometer" << input.getometer() << endl;
+
+                cout << "Work" << endl;
                 
                 VehicleControl vc;
                          
 
-                    irR = sbd.getValueForKey_MapOfDistances(INFRARED_REAR);
+                    irR = sbd.getValueForKey_MapOfDistances(INFRARED_REAR);                         
                     irRR = sbd.getValueForKey_MapOfDistances(INFRARED_REAR_RIGHT);
                     usF = sbd.getValueForKey_MapOfDistances(ULTRASONIC_FRONT);
                     irFR = sbd.getValueForKey_MapOfDistances(INFRARED_FRONT_RIGHT);
@@ -335,6 +345,7 @@ namespace automotive {
                 }
                 if (stageMoving == 0 ) {
                     switch (stageMeasuring) {
+                        
                         case 0: {
                             irFRValue = sbd.getValueForKey_MapOfDistances(INFRARED_FRONT_RIGHT);
                             double parking = vd.getAbsTraveledPath();
@@ -349,6 +360,7 @@ namespace automotive {
                             }
                         }
                             break;
+                        
                         case 1: {
                                 if ((irFRValue > 0) && (sbd.getValueForKey_MapOfDistances(INFRARED_FRONT_RIGHT) < 0)) {
                                     cout << "Setting stageMeasuring to 2 " << endl;
@@ -359,6 +371,7 @@ namespace automotive {
                             
                         }
                             break;
+                        
                         case 2: {
                                 end = vd.getAbsTraveledPath();
                             if (sbd.getValueForKey_MapOfDistances(INFRARED_FRONT_RIGHT) < 0 && end - start >= 7.5){
@@ -390,7 +403,7 @@ namespace automotive {
                 // Send container.
                 getConference().send(c);
             }
-             serial ->stop();
+            serial ->stop();
             serial ->setStringListener(NULL);
             //vaghti ctl c mizanim toye supercomponent oka print mishe ke baste shod barname
             return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

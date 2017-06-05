@@ -11,6 +11,7 @@
 
 using namespace std;
 string serial_received;
+int ir1, ir2, ir3, uls, ometer;
 
 void SerialReceiveBytes::nextString(const string &s) {
     char input[128];
@@ -19,6 +20,7 @@ void SerialReceiveBytes::nextString(const string &s) {
     char IR_3[128];
     char US[128];
     char ODOM[128];
+    
 
 
     serial_received += s;
@@ -51,17 +53,30 @@ void SerialReceiveBytes::nextString(const string &s) {
         strcpy(US,   serial_received.substr(1+IR3_T, US_T - IR3_T-1).c_str());
         strcpy(ODOM, serial_received.substr(1+US_T, Odom_T - US_T-1).c_str());
 
-        cout << "IR_1:" << IR_1 << endl;
-        cout << "IR_2:" << IR_2 << endl;
-        cout << "IR_3:" << IR_3 << endl;
-        cout << "US:" << US << endl;
-        cout << "ODOM:" << ODOM << endl;
+        
+
+        sscanf(IR_1, "%d", &ir1);
+        sscanf(IR_2, "%d", &ir2);
+        sscanf(IR_3, "%d", &ir3);
+        sscanf(US, "%d", &uls);
+        sscanf(ODOM, "%d", &ometer);
+        
+
+
+      //  cout << "IR_1:" << IR_1 << endl;
+      //  cout << "IR_2:" << IR_2 << endl;
+      //  cout << "IR_3:" << IR_3 << endl;
+      //  cout << "US:" << US << endl;
+      //  cout << "ODOM:" << ODOM << endl;
 
         serial_received = "";
     } else{
 
         cout << "Head and Tail not found in:" << serial_received << endl;
     }
+
+
+
 
 
 /*
@@ -79,6 +94,22 @@ void SerialReceiveBytes::nextString(const string &s) {
     
 }
 
+int SerialReceiveBytes::getir1(){
+    
+    return ir1;
+}
+int SerialReceiveBytes::getir2(){
+    return ir2;
+}
+int SerialReceiveBytes::getir3(){
+    return ir3;
+}
+int SerialReceiveBytes::getuls(){
+    return uls;
+}
+int SerialReceiveBytes::getometer(){
+    return ometer;
+}
 // We add some of OpenDaVINCI's namespaces for the sake of readability.
 using namespace odcore;
 using namespace odcore::wrapper;
